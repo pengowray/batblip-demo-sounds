@@ -34,12 +34,15 @@ fn sanitize_filename(name: &str) -> String {
 }
 
 fn main() {
+    // Load .env from current dir or any parent (walks up to repo root)
+    let _ = dotenvy::dotenv();
+
     let args = Args::parse();
 
     let api_key = args
         .key
         .or_else(|| std::env::var("XC_API_KEY").ok())
-        .expect("API key required: pass --key or set XC_API_KEY env var");
+        .expect("API key required: pass --key, set XC_API_KEY env var, or add it to .env");
 
     let url = format!(
         "https://xeno-canto.org/api/3/recordings?query=nr:{}&key={}",
