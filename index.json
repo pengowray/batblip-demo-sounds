@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "sounds": [
+    {
+      "filename": "XC928094 - Pond Myotis - Myotis dasycneme.wav",
+      "metadata": "XC928094 - Pond Myotis - Myotis dasycneme.xc.json",
+      "xc_id": 928094,
+      "en": "Pond Myotis",
+      "species": "Myotis dasycneme",
+      "source": "xeno-canto"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "source": "xeno-canto",
+  "xc_id": 928094,
+  "url": "https://www.xeno-canto.org/928094",
+  "file_url": "https://xeno-canto.org/928094/download",
+  "gen": "Myotis",
+  "sp": "dasycneme",
+  "en": "Pond Myotis",
+  "rec": "Marten Talsma",
+  "cnt": "Netherlands",
+  "loc": "Gerkesklooster, Achtkarspelen, Friesland",
+  "lat": "53.2411",
+  "lon": "6.2075",
+  "date": "2024-08-18",
+  "time": "22:16",
+  "type": "echolocation, feeding buzz",
+  "q": "A",
+  "length": "0:05",
+  "smp": 256000,
+  "lic": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "attribution": "Marten Talsma, XC928094. Accessible at www.xeno-canto.org/928094",
+  "retrieved": "2026-02-19"
+}
