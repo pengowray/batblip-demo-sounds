@@ -113,13 +113,13 @@ fn main() {
     let rec = &recordings[0];
 
     let id = rec["id"].as_str().unwrap_or("");
-    let gen = rec["gen"].as_str().unwrap_or("");
+    let genus = rec["gen"].as_str().unwrap_or("");
     let sp = rec["sp"].as_str().unwrap_or("");
     let en = rec["en"].as_str().unwrap_or("");
     let recordist = rec["rec"].as_str().unwrap_or("");
     let lic = rec["lic"].as_str().unwrap_or("");
 
-    let base_name = sanitize_filename(&format!("XC{} - {} - {} {}", id, en, gen, sp));
+    let base_name = sanitize_filename(&format!("XC{} - {} - {} {}", id, en, genus, sp));
 
     let attribution = format!(
         "{}, XC{}. Accessible at www.xeno-canto.org/{}",
@@ -131,7 +131,7 @@ fn main() {
         "xc_id": rec["id"].as_str().and_then(|s| s.parse::<u64>().ok()).unwrap_or(xc_number),
         "url": format!("https://www.xeno-canto.org/{}", id),
         "file_url": rec["file"],
-        "gen": gen,
+        "gen": genus,
         "sp": sp,
         "en": en,
         "rec": recordist,
@@ -190,7 +190,7 @@ fn main() {
     }
 
     // Print summary
-    println!("XC{}: {} ({} {})", id, en, gen, sp);
+    println!("XC{}: {} ({} {})", id, en, genus, sp);
     println!("Recordist: {}", recordist);
     println!("License: {}", lic);
     println!("Attribution: {}", attribution);
