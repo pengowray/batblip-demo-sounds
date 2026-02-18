@@ -8,8 +8,8 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(name = "xc-fetch", about = "Fetch recording metadata from xeno-canto API v3")]
 struct Args {
-    /// Xeno-canto catalogue number (e.g. 928094)
-    xc_number: u64,
+    /// Xeno-canto catalogue number or recording (e.g. 928094, XC928094, or https://xeno-canto.org/928094)
+    recording: String,
 
     /// Also download the audio file
     #[arg(long)]
@@ -33,11 +33,41 @@ fn sanitize_filename(name: &str) -> String {
         .collect()
 }
 
+/// Parse an XC number from various formats:
+/// "928094", "XC928094", "xc928094", "https://xeno-canto.org/928094", "https://www.xeno-canto.org/928094"
+fn parse_xc_number(input: &str) -> Result<u64, String> {
+    let s = input.trim();
+
+    // Try plain number first
+    if let Ok(n) = s.parse::<u64>() {
+        return Ok(n);
+    }
+
+    // Strip "XC" or "xc" prefix
+    if let Some(rest) = s.strip_prefix("XC").or_else(|| s.strip_prefix("xc")) {
+        return rest.parse::<u64>().map_err(|_| format!("Invalid XC number: {s}"));
+    }
+
+    // Try URL: extract trailing number from path
+    if s.starts_with("http://xeno-canto.org/") || s.starts_with("https://xeno-canto.org/") {
+        if let Some(last) = s.trim_end_matches('/').rsplit('/').next() {
+            if let Ok(n) = last.parse::<u64>() {
+                return Ok(n);
+            }
+        }
+    }
+
+    Err(format!("Can't parse XC number from: {s}"))
+}
+
 fn main() {
     // Load .env from current dir or any parent (walks up to repo root)
     let _ = dotenvy::dotenv();
 
     let args = Args::parse();
+
+    let xc_number = parse_xc_number(&args.recording)
+        .unwrap_or_else(|e| { eprintln!("{e}"); std::process::exit(1); });
 
     let api_key = args
         .key
@@ -46,10 +76,10 @@ fn main() {
 
     let url = format!(
         "https://xeno-canto.org/api/3/recordings?query=nr:{}&key={}",
-        args.xc_number, api_key
+        xc_number, api_key
     );
 
-    eprintln!("Fetching XC{}...", args.xc_number);
+    eprintln!("Fetching XC{}...", xc_number);
 
     let client = reqwest::blocking::Client::new();
     let resp = client
@@ -76,7 +106,7 @@ fn main() {
         .expect("Expected 'recordings' array in response");
 
     if recordings.is_empty() {
-        eprintln!("No recordings found for XC{}", args.xc_number);
+        eprintln!("No recordings found for XC{}", xc_number);
         std::process::exit(1);
     }
 
@@ -98,7 +128,7 @@ fn main() {
 
     let metadata = json!({
         "source": "xeno-canto",
-        "xc_id": rec["id"].as_str().and_then(|s| s.parse::<u64>().ok()).unwrap_or(args.xc_number),
+        "xc_id": rec["id"].as_str().and_then(|s| s.parse::<u64>().ok()).unwrap_or(xc_number),
         "url": format!("https://www.xeno-canto.org/{}", id),
         "file_url": rec["file"],
         "gen": gen,
