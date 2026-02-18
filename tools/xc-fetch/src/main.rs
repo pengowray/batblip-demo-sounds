@@ -11,13 +11,21 @@ struct Args {
     /// Xeno-canto catalogue number or recording (e.g. 928094, XC928094, or https://xeno-canto.org/928094)
     recording: String,
 
-    /// Also download the audio file
+    /// Fetch metadata only (skip audio download)
     #[arg(long)]
-    download: bool,
+    metadata_only: bool,
 
-    /// Output directory (default: current directory)
-    #[arg(long, default_value = ".")]
-    output_dir: PathBuf,
+    /// Output directory for sounds (default: ../../sounds relative to this tool)
+    #[arg(long)]
+    output_dir: Option<PathBuf>,
+
+    /// Path to index.json to update (default: ../../index.json relative to this tool)
+    #[arg(long)]
+    index: Option<PathBuf>,
+
+    /// Skip updating index.json
+    #[arg(long)]
+    no_index: bool,
 
     /// API key (overrides XC_API_KEY env var)
     #[arg(long)]
@@ -58,6 +66,51 @@ fn parse_xc_number(input: &str) -> Result<u64, String> {
     }
 
     Err(format!("Can't parse XC number from: {s}"))
+}
+
+/// Resolve default paths relative to the tool's own location (tools/xc-fetch/ -> repo root)
+fn repo_root() -> Option<PathBuf> {
+    let exe = std::env::current_exe().ok()?;
+    // exe is in tools/xc-fetch/target/debug/ or tools/xc-fetch/target/release/
+    // Walk up to find index.json
+    let mut dir = exe.parent()?;
+    for _ in 0..6 {
+        if dir.join("index.json").exists() {
+            return Some(dir.to_path_buf());
+        }
+        dir = dir.parent()?;
+    }
+    None
+}
+
+fn update_index(index_path: &PathBuf, xc_id: u64, en: &str, genus: &str, sp: &str, audio_filename: &str, meta_filename: &str) {
+    let mut index: Value = if index_path.exists() {
+        let content = fs::read_to_string(index_path).expect("Failed to read index.json");
+        serde_json::from_str(&content).expect("Failed to parse index.json")
+    } else {
+        json!({ "version": 1, "sounds": [] })
+    };
+
+    let sounds = index["sounds"].as_array_mut().expect("index.json 'sounds' is not an array");
+
+    // Check if this XC ID already exists
+    if sounds.iter().any(|s| s["xc_id"].as_u64() == Some(xc_id)) {
+        eprintln!("XC{} already in index.json, skipping update", xc_id);
+        return;
+    }
+
+    sounds.push(json!({
+        "filename": audio_filename,
+        "metadata": meta_filename,
+        "xc_id": xc_id,
+        "en": en,
+        "species": format!("{} {}", genus, sp),
+        "source": "xeno-canto"
+    }));
+
+    let json_str = serde_json::to_string_pretty(&index).expect("Failed to serialize index.json");
+    fs::write(index_path, format!("{}\n", json_str)).expect("Failed to write index.json");
+    eprintln!("Updated {}", index_path.display());
 }
 
 fn main() {
@@ -121,6 +174,15 @@ fn main() {
 
     let base_name = sanitize_filename(&format!("XC{} - {} - {} {}", id, en, genus, sp));
 
+    // Determine extension from file-name field or default to .wav
+    let ext = rec["file-name"]
+        .as_str()
+        .and_then(|name| name.rsplit('.').next())
+        .unwrap_or("wav");
+
+    let audio_filename = format!("{}.{}", base_name, ext);
+    let meta_filename = format!("{}.xc.json", base_name);
+
     let attribution = format!(
         "{}, XC{}. Accessible at www.xeno-canto.org/{}",
         recordist, id, id
@@ -151,25 +213,27 @@ fn main() {
         "raw_response": rec,
     });
 
-    fs::create_dir_all(&args.output_dir).expect("Failed to create output directory");
+    // Resolve output directory
+    let output_dir = args.output_dir.unwrap_or_else(|| {
+        repo_root()
+            .map(|r| r.join("sounds"))
+            .unwrap_or_else(|| PathBuf::from("."))
+    });
+    fs::create_dir_all(&output_dir).expect("Failed to create output directory");
 
-    let json_path = args.output_dir.join(format!("{}.xc.json", base_name));
+    // Write metadata JSON
+    let json_path = output_dir.join(&meta_filename);
     let json_bytes = serde_json::to_string_pretty(&metadata).expect("Failed to serialize JSON");
     fs::write(&json_path, format!("{}\n", json_bytes)).expect("Failed to write metadata JSON");
     eprintln!("Wrote {}", json_path.display());
 
-    if args.download {
+    // Download audio
+    if !args.metadata_only {
         let file_url = rec["file"]
             .as_str()
             .expect("No 'file' URL in recording data");
 
-        // Determine extension from file-name field or default to .wav
-        let ext = rec["file-name"]
-            .as_str()
-            .and_then(|name| name.rsplit('.').next())
-            .unwrap_or("wav");
-
-        let audio_path = args.output_dir.join(format!("{}.{}", base_name, ext));
+        let audio_path = output_dir.join(&audio_filename);
 
         eprintln!("Downloading audio...");
         let audio_resp = client
@@ -187,6 +251,18 @@ fn main() {
         file.write_all(&audio_bytes)
             .expect("Failed to write audio file");
         eprintln!("Wrote {} ({:.1} MB)", audio_path.display(), audio_bytes.len() as f64 / 1_048_576.0);
+    }
+
+    // Update index.json
+    if !args.no_index {
+        let index_path = args.index.unwrap_or_else(|| {
+            repo_root()
+                .map(|r| r.join("index.json"))
+                .unwrap_or_else(|| output_dir.join("../index.json"))
+        });
+
+        let xc_id = rec["id"].as_str().and_then(|s| s.parse::<u64>().ok()).unwrap_or(xc_number);
+        update_index(&index_path, xc_id, en, genus, sp, &audio_filename, &meta_filename);
     }
 
     // Print summary
