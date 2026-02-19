@@ -15,6 +15,14 @@
       "source": "xeno-canto",
       "species": "Hipposideros caffer",
       "xc_id": 1002572
+    },
+    {
+      "en": "Eurasian Particolored Bat",
+      "filename": "XC838798 - Eurasian Particolored Bat - Vespertilio murinus.wav",
+      "metadata": "XC838798 - Eurasian Particolored Bat - Vespertilio murinus.xc.json",
+      "source": "xeno-canto",
+      "species": "Vespertilio murinus",
+      "xc_id": 838798
     }
   ],
   "version": 1
