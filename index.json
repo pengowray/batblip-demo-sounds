@@ -23,6 +23,30 @@
       "source": "xeno-canto",
       "species": "Vespertilio murinus",
       "xc_id": 838798
+    },
+    {
+      "en": "Identity unknown",
+      "filename": "XC1082019 - Identity unknown - Mystery mystery.mp3",
+      "metadata": "XC1082019 - Identity unknown - Mystery mystery.xc.json",
+      "source": "xeno-canto",
+      "species": "Mystery mystery",
+      "xc_id": 1082019
+    },
+    {
+      "en": "Baird's Sandpiper",
+      "filename": "XC1081963 - Baird's Sandpiper - Calidris bairdii.mp3",
+      "metadata": "XC1081963 - Baird's Sandpiper - Calidris bairdii.xc.json",
+      "source": "xeno-canto",
+      "species": "Calidris bairdii",
+      "xc_id": 1081963
+    },
+    {
+      "en": "Bruce's Green Pigeon",
+      "filename": "XC1081841 - Bruce's Green Pigeon - Treron waalia.mp3",
+      "metadata": "XC1081841 - Bruce's Green Pigeon - Treron waalia.xc.json",
+      "source": "xeno-canto",
+      "species": "Treron waalia",
+      "xc_id": 1081841
     }
   ],
   "version": 1
