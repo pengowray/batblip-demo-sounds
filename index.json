@@ -71,6 +71,14 @@
       "source": "xeno-canto",
       "species": "Nyctalus leisleri",
       "xc_id": 814304
+    },
+    {
+      "en": "Northern Serotine",
+      "filename": "XC817761 - Northern Serotine - Eptesicus nilssonii.wav",
+      "metadata": "XC817761 - Northern Serotine - Eptesicus nilssonii.xc.json",
+      "source": "xeno-canto",
+      "species": "Eptesicus nilssonii",
+      "xc_id": 817761
     }
   ],
   "version": 1
