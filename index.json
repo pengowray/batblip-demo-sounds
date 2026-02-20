@@ -47,6 +47,30 @@
       "source": "xeno-canto",
       "species": "Treron waalia",
       "xc_id": 1081841
+    },
+    {
+      "en": "White-striped Free-tailed Bat",
+      "filename": "XC809882 - White-striped Free-tailed Bat - Austronomus australis.wav",
+      "metadata": "XC809882 - White-striped Free-tailed Bat - Austronomus australis.xc.json",
+      "source": "xeno-canto",
+      "species": "Austronomus australis",
+      "xc_id": 809882
+    },
+    {
+      "en": "Queensland Tube-nosed Fruit Bat",
+      "filename": "XC809855 - Queensland Tube-nosed Fruit Bat - Nyctimene robinsoni.wav",
+      "metadata": "XC809855 - Queensland Tube-nosed Fruit Bat - Nyctimene robinsoni.xc.json",
+      "source": "xeno-canto",
+      "species": "Nyctimene robinsoni",
+      "xc_id": 809855
+    },
+    {
+      "en": "Leisler's Noctule",
+      "filename": "XC814304 - Leisler's Noctule - Nyctalus leisleri.wav",
+      "metadata": "XC814304 - Leisler's Noctule - Nyctalus leisleri.xc.json",
+      "source": "xeno-canto",
+      "species": "Nyctalus leisleri",
+      "xc_id": 814304
     }
   ],
   "version": 1
