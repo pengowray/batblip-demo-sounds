@@ -12,29 +12,34 @@ Example sound files for [batchi](https://github.com/pengo/batchi), a bat call an
 
 Each recording is individually licensed. See the `.xc.json` metadata file for the `lic` (license URL), `rec` (recordist), and `attribution` fields. Most recordings from xeno-canto are Creative Commons licensed.
 
-## xc-fetch tool
+## Adding recordings with xc-fetch
 
-A Rust CLI tool in `tools/xc-fetch/` fetches recording metadata (and optionally audio) from the [xeno-canto API v3](https://xeno-canto.org/explore/api).
+The `xc-fetch` CLI tool (in the main [batchi](https://github.com/pengo/batchi) repo under `xc-cli/`) fetches recordings from the [xeno-canto API v3](https://xeno-canto.org/explore/api).
 
 ### Setup
 
-You need a xeno-canto API key. Set it as an environment variable:
-
 ```bash
-export XC_API_KEY=your_key_here
+# From the batchi repo root:
+cargo run -p xc-cli -- set-key YOUR_XC_API_KEY
 ```
+
+Or set `XC_API_KEY` as an environment variable, or add it to a `.env` file.
 
 ### Usage
 
 ```bash
-cd tools/xc-fetch
-cargo run -- 928094                          # fetch metadata only
-cargo run -- 928094 --download               # fetch metadata + download audio
-cargo run -- 928094 --output-dir ../../sounds # write to sounds directory
+# Fetch a recording into this repo:
+cargo run -p xc-cli -- fetch 928094 --cache-dir batchi-demo-sounds
+
+# Metadata only (no audio download):
+cargo run -p xc-cli -- fetch 928094 --metadata-only --cache-dir batchi-demo-sounds
+
+# Browse bat species:
+cargo run -p xc-cli -- browse bats
 ```
 
 The tool generates:
-- `XC{id} - {English name} - {Genus species}.xc.json` (metadata)
-- `XC{id} - {English name} - {Genus species}.wav` (audio, with `--download`)
 
-Remember to update `index.json` after adding new files.
+- `sounds/XC{id} - {English name} - {Genus species}.{ext}` (audio)
+- `sounds/XC{id} - {English name} - {Genus species}.xc.json` (metadata sidecar)
+- Updates `index.json` automatically
