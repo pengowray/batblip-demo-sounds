@@ -79,6 +79,14 @@
       "source": "xeno-canto",
       "species": "Eptesicus nilssonii",
       "xc_id": 817761
+    },
+    {
+      "en": "Gentoo Penguin",
+      "filename": "XC540767 - Gentoo Penguin - Pygoscelis papua.mp3",
+      "metadata": "XC540767 - Gentoo Penguin - Pygoscelis papua.xc.json",
+      "source": "xeno-canto",
+      "species": "Pygoscelis papua",
+      "xc_id": 540767
     }
   ],
   "version": 1
