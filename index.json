@@ -87,6 +87,14 @@
       "source": "xeno-canto",
       "species": "Pygoscelis papua",
       "xc_id": 540767
+    },
+    {
+      "en": "Jaguar",
+      "filename": "XC992981 - Jaguar - Panthera onca.mp3",
+      "metadata": "XC992981 - Jaguar - Panthera onca.xc.json",
+      "source": "xeno-canto",
+      "species": "Panthera onca",
+      "xc_id": 992981
     }
   ],
   "version": 1
