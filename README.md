@@ -1,6 +1,6 @@
-# batblip-demo-sounds
+# batmonic-demo-sounds
 
-Example sound files for [batblip](https://github.com/pengo/batblip), a bat call analysis tool.
+Example sound files for [batmonic](https://github.com/pengo/batmonic), a bat call analysis tool.
 
 ## File conventions
 
@@ -14,12 +14,12 @@ Each recording is individually licensed. See the `.xc.json` metadata file for th
 
 ## Adding recordings with xc-fetch
 
-The `xc-fetch` CLI tool (in the main [batblip](https://github.com/pengo/batblip) repo under `xc-cli/`) fetches recordings from the [xeno-canto API v3](https://xeno-canto.org/explore/api).
+The `xc-fetch` CLI tool (in the main [batmonic](https://github.com/pengo/batmonic) repo under `xc-cli/`) fetches recordings from the [xeno-canto API v3](https://xeno-canto.org/explore/api).
 
 ### Setup
 
 ```bash
-# From the batblip repo root:
+# From the batmonic repo root:
 cargo run -p xc-cli -- set-key YOUR_XC_API_KEY
 ```
 
@@ -29,10 +29,10 @@ Or set `XC_API_KEY` as an environment variable, or add it to a `.env` file.
 
 ```bash
 # Fetch a recording into this repo:
-cargo run -p xc-cli -- fetch 928094 --cache-dir batblip-demo-sounds
+cargo run -p xc-cli -- fetch 928094 --cache-dir batmonic-demo-sounds
 
 # Metadata only (no audio download):
-cargo run -p xc-cli -- fetch 928094 --metadata-only --cache-dir batblip-demo-sounds
+cargo run -p xc-cli -- fetch 928094 --metadata-only --cache-dir batmonic-demo-sounds
 
 # Browse bat species:
 cargo run -p xc-cli -- browse bats
